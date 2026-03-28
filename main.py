@@ -17,9 +17,9 @@ for i in contacts_list:
     # Добавляем организацию и должность как ест
     contact = contact + i[3:5]
     # Разбираем и преобразуем телефон
-    phone_pattern = r"(\+7|8)?\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{2})[-\s]?(\d{2})(?:\s*\(?(доб\.\s*\d{4})\)?)?"
+    phone_pattern = r"(\+7|8)?\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{2})[-\s]?(\d{2})(?:\s*\(?(доб\.)\s*(\d{4})\)?)?"
     # Шаблон для замены: +7(код)цифры-цифры-цифры
-    replacement_pattern = r"+7(\2)\3-\4-\5 \6"
+    replacement_pattern = r"+7(\2)\3-\4-\5\6\7"
     contact.append(re.sub(phone_pattern, replacement_pattern, i[5]))
     # Добавляем почту как есть
     contact.append(i[6])
@@ -31,7 +31,7 @@ print(phonebook)
 # Для этого создадим словарь, где ключом будет кортеж из имени и фамилии
 merged = {}
 
-for c in phonebook:
+for c in phonebook[1:]:
     key = (c[0], c[1]) # Фамилия и Имя
     if key not in merged:
         # Если мы впервые встретили такое сочетание - добавляем в словарь как есть
@@ -41,7 +41,7 @@ for c in phonebook:
         # а если оно пустое — подставляем из новой
         merged[key] = [old if old!='' else new for old, new in zip(merged[key], c)]
 
-result = list(merged.values())
+result = [phonebook[0]]+list(merged.values())
 #print(result)
 # TODO 2: сохраните получившиеся данные в другой файл
 # код для записи файла в формате CSV
